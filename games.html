@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Games Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .game-container {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 20px auto;
+            padding: 20px;
+            width: 300px;
+            background-color: #fff;
+        }
+        .button {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Fun Games Page</h1>
+
+    <!-- Number Guessing Game -->
+    <div class="game-container">
+        <h2>Number Guessing Game</h2>
+        <p>Guess a number between 1 and 10:</p>
+        <input type="number" id="guessInput" min="1" max="10">
+        <button class="button" onclick="playGuessingGame()">Guess</button>
+        <p id="guessResult"></p>
+    </div>
+
+    <!-- Tic-Tac-Toe Game -->
+    <div class="game-container">
+        <h2>Tic-Tac-Toe</h2>
+        <table id="ticTacToeBoard" border="1" style="width: 100px; margin: 0 auto;">
+            <tr>
+                <td onclick="makeMove(this, 0, 0)" style="width: 30px; height: 30px;"></td>
+                <td onclick="makeMove(this, 0, 1)"></td>
+                <td onclick="makeMove(this, 0, 2)"></td>
+            </tr>
+            <tr>
+                <td onclick="makeMove(this, 1, 0)"></td>
+                <td onclick="makeMove(this, 1, 1)"></td>
+                <td onclick="makeMove(this, 1, 2)"></td>
+            </tr>
+            <tr>
+                <td onclick="makeMove(this, 2, 0)"></td>
+                <td onclick="makeMove(this, 2, 1)"></td>
+                <td onclick="makeMove(this, 2, 2)"></td>
+            </tr>
+        </table>
+        <p id="ticTacToeResult"></p>
+        <button class="button" onclick="resetTicTacToe()">Reset</button>
+    </div>
+
+    <!-- Rock-Paper-Scissors Game -->
+    <div class="game-container">
+        <h2>Rock-Paper-Scissors</h2>
+        <button class="button" onclick="playRPS('rock')">Rock</button>
+        <button class="button" onclick="playRPS('paper')">Paper</button>
+        <button class="button" onclick="playRPS('scissors')">Scissors</button>
+        <p id="rpsResult"></p>
+    </div>
+
+    <script>
+        // Number Guessing Game
+        function playGuessingGame() {
+            const userGuess = document.getElementById('guessInput').value;
+            const randomNumber = Math.floor(Math.random() * 10) + 1;
+            if (userGuess == randomNumber) {
+                document.getElementById('guessResult').innerText = 'Correct! You guessed the number!';
+            } else {
+                document.getElementById('guessResult').innerText = 'Wrong! The correct number was ' + randomNumber;
+            }
+        }
+
+        // Tic-Tac-Toe Game
+        let ticTacToeBoard = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+        let currentPlayer = 'X';
+
+        function makeMove(cell, row, col) {
+            if (ticTacToeBoard[row][col] === '') {
+                ticTacToeBoard[row][col] = currentPlayer;
+                cell.innerText = currentPlayer;
+                if (checkWin()) {
+                    document.getElementById('ticTacToeResult').innerText = currentPlayer + ' wins!';
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function checkWin() {
+            for (let i = 0; i < 3; i++) {
+                if (ticTacToeBoard[i][0] && ticTacToeBoard[i][0] === ticTacToeBoard[i][1] && ticTacToeBoard[i][0] === ticTacToeBoard[i][2]) return true;
+                if (ticTacToeBoard[0][i] && ticTacToeBoard[0][i] === ticTacToeBoard[1][i] && ticTacToeBoard[0][i] === ticTacToeBoard[2][i]) return true;
+            }
+            if (ticTacToeBoard[0][0] && ticTacToeBoard[0][0] === ticTacToeBoard[1][1] && ticTacToeBoard[0][0] === ticTacToeBoard[2][2]) return true;
+            if (ticTacToeBoard[0][2] && ticTacToeBoard[0][2] === ticTacToeBoard[1][1] && ticTacToeBoard[0][2] === ticTacToeBoard[2][0]) return true;
+            return false;
+        }
+
+        function resetTicTacToe() {
+            ticTacToeBoard = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            currentPlayer = 'X';
+            document.getElementById('ticTacToeResult').innerText = '';
+            let cells = document.querySelectorAll('#ticTacToeBoard td');
+            cells.forEach(cell => cell.innerText = '');
+        }
+
+        // Rock-Paper-Scissors Game
+        function playRPS(userChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            let result = '';
+            if (userChoice === computerChoice) {
+                result = 'It\'s a tie!';
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'scissors' && computerChoice === 'paper') ||
+                (userChoice === 'paper' && computerChoice === 'rock')
+            ) {
+                result = 'You win! ' + userChoice + ' beats ' + computerChoice;
+            } else {
+                result = 'You lose! ' + computerChoice + ' beats ' + userChoice;
+            }
+            document.getElementById('rpsResult').innerText = result;
+        }
+    </script>
+
+</body>
+</html>
